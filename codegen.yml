@@ -1,0 +1,6 @@
+overwrite: true
+schema: 'schema.graphql'
+generates:
+  src/shared/api/types.ts:
+    plugins:
+      - 'typescript'

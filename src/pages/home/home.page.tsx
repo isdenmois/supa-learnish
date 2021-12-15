@@ -1,7 +1,21 @@
 import { FC } from 'react'
 import { atom } from 'nanostores'
 import { useStore } from '@nanostores/react'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
+import { useQuery } from 'urql'
+import { Query } from 'shared/api'
+
+const LessonsQuery = `#graphql
+  query {
+    lessons {
+      data {
+        _id
+        description
+        link
+      }
+    }
+  }
+`
 
 const $count = atom(0)
 
@@ -15,6 +29,9 @@ const dec = () => {
 
 export const HomePage: FC = () => {
   const count = useStore($count)
+  const [{ data, fetching }] = useQuery<Query>({
+    query: LessonsQuery,
+  })
 
   return (
     <Box display='flex' flexDirection='column' alignItems='center'>
@@ -30,6 +47,20 @@ export const HomePage: FC = () => {
           Decrement
         </Button>
       </Box>
+
+      {fetching && <CircularProgress />}
+
+      {data?.lessons.data && (
+        <List>
+          {data.lessons.data.map(lesson => (
+            <ListItem key={lesson._id} disablePadding>
+              <ListItemButton>
+                <ListItemText primary={lesson.description} secondary={lesson.link} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Box>
   )
 }
