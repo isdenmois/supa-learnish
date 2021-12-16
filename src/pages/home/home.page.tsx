@@ -1,8 +1,12 @@
 import { FC } from 'react'
+
 import { atom } from 'nanostores'
 import { useStore } from '@nanostores/react'
-import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
+
 import { useQuery } from 'urql'
+import { useNavigate } from 'react-location'
+import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
+
 import { Query } from 'shared/api'
 
 const LessonsQuery = `#graphql
@@ -32,6 +36,7 @@ export const HomePage: FC = () => {
   const [{ data, fetching }] = useQuery<Query>({
     query: LessonsQuery,
   })
+  const navigate = useNavigate()
 
   return (
     <Box display='flex' flexDirection='column' alignItems='center'>
@@ -48,19 +53,23 @@ export const HomePage: FC = () => {
         </Button>
       </Box>
 
-      {fetching && <CircularProgress />}
+      <Box mt='16px'>
+        <Button onClick={() => navigate({ to: '/lesson-list' })}>All lessons</Button>
 
-      {data?.lessons.data && (
-        <List>
-          {data.lessons.data.map(lesson => (
-            <ListItem key={lesson._id} disablePadding>
-              <ListItemButton>
-                <ListItemText primary={lesson.description} secondary={lesson.link} />
-              </ListItemButton>
-            </ListItem>
-          ))}
-        </List>
-      )}
+        {fetching && <CircularProgress />}
+
+        {data?.lessons.data && (
+          <List>
+            {data.lessons.data.map(lesson => (
+              <ListItem key={lesson._id} disablePadding>
+                <ListItemButton>
+                  <ListItemText primary={lesson.description} secondary={lesson.link} />
+                </ListItemButton>
+              </ListItem>
+            ))}
+          </List>
+        )}
+      </Box>
     </Box>
   )
 }

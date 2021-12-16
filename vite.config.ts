@@ -14,6 +14,7 @@ export default defineConfig({
   resolve: {
     alias: {
       pages: resolve(__dirname, 'src/pages'),
+      entities: resolve(__dirname, 'src/entities'),
       shared: resolve(__dirname, 'src/shared'),
     },
   },
