@@ -2,7 +2,7 @@ import { FC, useMemo } from 'react'
 import { Box, CircularProgress } from '@mui/material'
 import { sortByPath } from 'rambdax'
 
-import { AddLesson, LessonEditCard } from 'entities/lesson'
+import { AddLessonCard, EditLessonCard } from 'entities/lesson'
 
 import { Lesson, useLessonsQuery } from 'shared/api'
 
@@ -19,10 +19,10 @@ export const LessonListPage: FC = () => {
       <h1>Lessons editor</h1>
 
       <Box gap='16px' display='flex' flexDirection='column'>
-        <AddLesson />
+        <AddLessonCard />
 
         {lessons.map(lesson => (
-          <LessonEditCard key={lesson._id} lesson={lesson} />
+          <EditLessonCard key={lesson._id} lesson={lesson} />
         ))}
       </Box>
     </>

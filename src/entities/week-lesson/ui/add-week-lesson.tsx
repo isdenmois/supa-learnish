@@ -15,14 +15,18 @@ export const AddWeekLesson: FC<Props> = ({ weekday }) => {
   const [edit, setEdit] = useState(false)
 
   const onSubmit = async (values: WeekLessonInput) => {
-    console.log('AddWeekLesson', values)
     await addWeekLesson({ data: serializeWeekLesson(values) })
     setEdit(false)
   }
 
   if (edit) {
     return (
-      <WeekLessonForm initialValues={{ weekday, duration: 30 }} onCancel={() => setEdit(false)} onSubmit={onSubmit} />
+      <WeekLessonForm
+        submitLabel='Add lesson'
+        defaultValues={{ weekday, duration: 30, lesson: { create: {} } }}
+        onCancel={() => setEdit(false)}
+        onSubmit={onSubmit}
+      />
     )
   }
 
