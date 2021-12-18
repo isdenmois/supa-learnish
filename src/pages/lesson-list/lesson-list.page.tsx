@@ -4,23 +4,10 @@ import { sortByPath } from 'rambdax'
 
 import { AddLesson, LessonEditCard } from 'entities/lesson'
 
-import { Lesson, lessonFragment, useQuery } from 'shared/api'
-
-const LessonsQuery = `#graphql
-  query Lessons {
-    lessons {
-      data {
-        _id
-        ...LessonFragment
-      }
-    }
-  }
-
-  ${lessonFragment}
-`
+import { Lesson, useLessonsQuery } from 'shared/api'
 
 export const LessonListPage: FC = () => {
-  const [{ data, fetching }] = useQuery({ query: LessonsQuery })
+  const [{ data, fetching }] = useLessonsQuery()
   const lessons: Lesson[] = useMemo(() => sortByPath('description', data?.lessons.data || []), [data?.lessons.data])
 
   if (fetching) {

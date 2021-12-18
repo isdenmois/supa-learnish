@@ -9,6 +9,7 @@ import {
 import { cacheExchange } from '@urql/exchange-graphcache'
 import { Query } from './types'
 import { lessonCacheExchange } from './lesson'
+import { weekLessonCacheExchange } from './week-lesson'
 
 export const client = createClient({
   url: 'https://graphql.eu.fauna.com/graphql',
@@ -23,6 +24,7 @@ export const client = createClient({
       updates: {
         Mutation: {
           ...lessonCacheExchange,
+          ...weekLessonCacheExchange,
         },
       },
     }),

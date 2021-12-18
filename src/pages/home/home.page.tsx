@@ -2,23 +2,28 @@ import { FC } from 'react'
 
 import { atom } from 'nanostores'
 import { useStore } from '@nanostores/react'
-
-import { useQuery } from 'urql'
 import { useNavigate } from 'react-location'
-import { Box, Button, CircularProgress, List, ListItem, ListItemButton, ListItemText, Typography } from '@mui/material'
 
-import { Query } from 'shared/api'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
+
+import { lessonFragment, useQuery, WeekLesson } from 'shared/api'
+import { AddWeekLesson, WeekLessonCard } from 'entities/week-lesson'
 
 const LessonsQuery = `#graphql
   query {
-    lessons {
+    weekLessons {
       data {
         _id
-        description
-        link
+        duration
+        weekday
+        lesson {
+          _id
+          ...LessonFragment
+        }
       }
     }
   }
+  ${lessonFragment}
 `
 
 const $count = atom(0)
@@ -33,7 +38,7 @@ const dec = () => {
 
 export const HomePage: FC = () => {
   const count = useStore($count)
-  const [{ data, fetching }] = useQuery<Query>({
+  const [{ data, fetching }] = useQuery({
     query: LessonsQuery,
   })
   const navigate = useNavigate()
@@ -58,18 +63,42 @@ export const HomePage: FC = () => {
 
         {fetching && <CircularProgress />}
 
-        {data?.lessons.data && (
-          <List>
-            {data.lessons.data.map(lesson => (
-              <ListItem key={lesson._id} disablePadding>
-                <ListItemButton>
-                  <ListItemText primary={lesson.description} secondary={lesson.link} />
-                </ListItemButton>
-              </ListItem>
-            ))}
-          </List>
-        )}
+        {data?.weekLessons.data && <WeekView weekLessons={data.weekLessons.data} />}
       </Box>
+    </Box>
+  )
+}
+
+const WeekView: FC<{ weekLessons: WeekLesson[] }> = ({ weekLessons }) => {
+  const days: any[] = []
+
+  for (let i = 0; i < 7; i++) {
+    days.push(
+      <DayColumn key={i} weekday={i} weekLessons={weekLessons.filter(weekLesson => weekLesson.weekday === i)} />,
+    )
+  }
+
+  return (
+    <Box display='flex' flexDirection='row' width='100vw' gap='32px'>
+      {days}
+    </Box>
+  )
+}
+
+const WEEKDAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
+const DayColumn: FC<{ weekday: number; weekLessons: WeekLesson[] }> = ({ weekday, weekLessons }) => {
+  return (
+    <Box display='flex' flexDirection='column' flex={1} gap='16px'>
+      <Typography variant='h5' textAlign='center'>
+        {WEEKDAY_NAMES[weekday]}
+      </Typography>
+
+      {weekLessons.map(weekLesson => (
+        <WeekLessonCard key={weekLesson._id} weekLesson={weekLesson} />
+      ))}
+
+      <AddWeekLesson weekday={weekday} />
     </Box>
   )
 }
