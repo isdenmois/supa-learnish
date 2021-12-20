@@ -1,2 +1,2 @@
 export * from './add-week-lesson'
-export * from './week-lesson-card'
+export * from './edit-week-lesson'

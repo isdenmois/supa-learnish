@@ -1,9 +1,18 @@
 import { FC, useMemo } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { Box, Button, Slider, Typography } from '@mui/material'
+import styled from '@emotion/styled'
 
 import { LessonSelect } from 'entities/lesson'
 import { WeekLessonInput } from 'shared/api'
+
+//#region styles
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`
+//#endregion
 
 interface Props {
   defaultValues: any
@@ -17,29 +26,31 @@ export const WeekLessonForm: FC<Props> = ({ defaultValues, submitLabel, onCancel
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
-        <Typography gutterBottom>Duration</Typography>
+      <Form onSubmit={form.handleSubmit(onSubmit)}>
+        <div>
+          <Typography gutterBottom>Duration</Typography>
 
-        <Slider
-          defaultValue={defaultValues.duration}
-          {...form.register('duration', { valueAsNumber: true })}
-          valueLabelDisplay='auto'
-          step={5}
-          marks
-          min={0}
-          max={60}
-        />
+          <Slider
+            defaultValue={defaultValues.duration}
+            {...form.register('duration', { valueAsNumber: true })}
+            valueLabelDisplay='auto'
+            step={5}
+            marks
+            min={0}
+            max={60}
+          />
+        </div>
 
         <LessonSelect />
 
-        <Box display='flex'>
+        <Box display='flex' gap='16px'>
           <Button onClick={onCancel}>Cancel</Button>
 
-          <Button type='submit' variant='contained'>
+          <Button type='submit' variant='contained' fullWidth>
             {submitLabel}
           </Button>
         </Box>
-      </form>
+      </Form>
     </FormProvider>
   )
 }

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-location'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 
 import { lessonFragment, useQuery, WeekLesson } from 'shared/api'
-import { AddWeekLesson, WeekLessonCard } from 'entities/week-lesson'
+import { AddWeekLesson, EditWeekLesson } from 'entities/week-lesson'
 
 const LessonsQuery = `#graphql
   query {
@@ -95,7 +95,7 @@ const DayColumn: FC<{ weekday: number; weekLessons: WeekLesson[] }> = ({ weekday
       </Typography>
 
       {weekLessons.map(weekLesson => (
-        <WeekLessonCard key={weekLesson._id} weekLesson={weekLesson} />
+        <EditWeekLesson key={weekLesson._id} weekLesson={weekLesson} />
       ))}
 
       <AddWeekLesson weekday={weekday} />
