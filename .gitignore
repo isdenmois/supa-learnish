@@ -4,3 +4,6 @@ dist
 dist-ssr
 *.local
 pnpm-lock.yaml
+.env
+graphql.schema.json
+src/shared/api/types.ts

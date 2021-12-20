@@ -1,0 +1,172 @@
+directive @embedded on OBJECT
+
+directive @collection(name: String!) on OBJECT
+
+directive @index(name: String!) on FIELD_DEFINITION
+
+directive @resolver(name: String, paginated: Boolean! = false) on FIELD_DEFINITION
+
+directive @relation(name: String) on FIELD_DEFINITION
+
+directive @unique(index: String) on FIELD_DEFINITION
+
+scalar Date
+
+# 'Lesson' input values
+input LessonInput {
+  type: LessonType!
+  description: String
+  link: String
+  note: String
+  isOutdated: Boolean
+}
+
+type Mutation {
+  # Delete an existing document in the collection of 'WeekLesson'
+  deleteWeekLesson(
+    # The 'WeekLesson' document's ID
+    id: ID!
+  ): WeekLesson
+
+  # Create a new document in the collection of 'Lesson'
+  createLesson(
+    # 'Lesson' input values
+    data: LessonInput!
+  ): Lesson!
+
+  # Delete an existing document in the collection of 'Lesson'
+  deleteLesson(
+    # The 'Lesson' document's ID
+    id: ID!
+  ): Lesson
+
+  # Create a new document in the collection of 'WeekLesson'
+  createWeekLesson(
+    # 'WeekLesson' input values
+    data: WeekLessonInput!
+  ): WeekLesson!
+
+  # Update an existing document in the collection of 'Lesson'
+  updateLesson(
+    # The 'Lesson' document's ID
+    id: ID!
+
+    # 'Lesson' input values
+    data: LessonInput!
+  ): Lesson
+
+  # Update an existing document in the collection of 'WeekLesson'
+  updateWeekLesson(
+    # The 'WeekLesson' document's ID
+    id: ID!
+
+    # 'WeekLesson' input values
+    data: WeekLessonInput!
+  ): WeekLesson
+}
+
+scalar Time
+
+# 'WeekLesson' input values
+input WeekLessonInput {
+  duration: Int!
+  weekday: Int!
+  lesson: WeekLessonLessonRelation
+}
+
+# Allow manipulating the relationship between the types 'WeekLesson' and 'Lesson' using the field 'WeekLesson.lesson'.
+input WeekLessonLessonRelation {
+  # Create a document of type 'Lesson' and associate it with the current document.
+  create: LessonInput
+
+  # Connect a document of type 'Lesson' with the current document using its ID.
+  connect: ID
+}
+
+type Lesson {
+  description: String
+
+  # The document's ID.
+  _id: ID!
+  note: String
+  link: String
+  isOutdated: Boolean
+  type: LessonType!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'Lesson'.
+type LessonPage {
+  # The elements of type 'Lesson' in this page.
+  data: [Lesson!]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+enum LessonType {
+  Link
+  YouTube
+  PDF
+  Plain
+}
+
+type Query {
+  # Find a document from the collection of 'Lesson' by its id.
+  findLessonByID(
+    # The 'Lesson' document's ID
+    id: ID!
+  ): Lesson
+
+  # Find a document from the collection of 'WeekLesson' by its id.
+  findWeekLessonByID(
+    # The 'WeekLesson' document's ID
+    id: ID!
+  ): WeekLesson
+  lessons(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): LessonPage!
+  weekLessons(
+    # The number of items to return per page.
+    _size: Int
+
+    # The pagination cursor.
+    _cursor: String
+  ): WeekLessonPage!
+}
+
+type WeekLesson {
+  duration: Int!
+
+  # The document's ID.
+  _id: ID!
+  lesson: Lesson!
+  weekday: Int!
+
+  # The document's timestamp.
+  _ts: Long!
+}
+
+# The pagination object for elements of type 'WeekLesson'.
+type WeekLessonPage {
+  # The elements of type 'WeekLesson' in this page.
+  data: [WeekLesson!]!
+
+  # A cursor for elements coming after the current page.
+  after: String
+
+  # A cursor for elements coming before the current page.
+  before: String
+}
+
+# The `Long` scalar type represents non-fractional signed whole numeric values. Long can represent values between -(2^63) and 2^63 - 1.
+scalar Long
